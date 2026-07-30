@@ -70,13 +70,15 @@ export function buildHeaders(options: RequestHeaderOptions = {}): Record<string,
   const config = getConfig();
 
   const headers: Record<string, string> = {
-    'User-Agent': config.userAgent || '',
     'Content-Type': 'application/x-www-form-urlencoded',
     'X-Requested-With': 'typeof.scolup.linkdirecte',
   };
 
   if (config.proxyUrl) {
+    headers['X-Procsy-User-Agent'] = config.userAgent || '';
     headers['X-Procsy-Base-URL'] = BASE_API_URL.replace(/^https?:\/\//, '');
+  } else {
+    headers['User-Agent'] = config.userAgent || '';
   }
 
   if (!options.skipAuth) {

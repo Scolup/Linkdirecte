@@ -43,7 +43,7 @@ configure({
 
 Linkdirecte has built-in proxy support. When `proxyUrl` is set, all API requests and file downloads are routed through that URL instead of hitting EcoleDirecte directly. This is essential when running in browsers, where CORS blocks direct calls to the EcoleDirecte API.
 
-The recommended proxy is [**Procsy**](https://github.com/Scolup/Procsy) — a lightweight Cloudflare Workers proxy purpose-built for this use case. It handles CORS headers, IP spoofing, and SSRF protection out of the box.
+The recommended proxy is [**Procsy**](https://github.com/Scolup/Procsy), a lightweight Cloudflare Workers proxy purpose-built for this use case. It handles CORS headers, IP spoofing, and SSRF protection out of the box.
 
 ### Setup
 
@@ -63,7 +63,10 @@ That's it. Every outgoing request will now be relayed through Procsy.
 
 ### How it works under the hood
 
-When `proxyUrl` is configured, Linkdirecte rewrites all outgoing request URLs to point at the proxy base. It also attaches an `X-Procsy-Base-URL` header containing the original EcoleDirecte API base URL, so the proxy knows where to forward the request.
+When `proxyUrl` is configured, Linkdirecte rewrites all outgoing request URLs to point at the proxy base. It also:
+
+- Moves the user agent from the `User-Agent` header to `X-Procsy-User-Agent`, which bypasses Chromium's 40450316 issue.
+- Attaches an `X-Procsy-Base-URL` header containing the original EcoleDirecte API base URL, so the proxy knows where to forward the request.
 
 > **Note**: When `proxyUrl` is **not** set (the default), Linkdirecte talks directly to `https://api.ecoledirecte.com/v3`. This works fine in server-side environments where CORS is not a concern.
 

@@ -19,7 +19,7 @@ Whether you are building Discord bots, native mobile apps, web apps, or others, 
 - 🛣️ **Built-in proxy support** | Perfect for running directly in browsers (bypassing CORS).
 - 🛜 **Offline** | Local cache and built-in offline action queues.
 - 🎓 **Rich feature set** | Fully supports grades, timetable, homework, messages, attendance, cloud, QCM and more. _Parent account support coming this year!_
-- 🌐 **Available everywhere** | Works flawlessly on Node.js 18+, Bun, Deno, modern browsers, Cloudflare Workers, React Native, Capacitor, Electron, etc.
+- 🌐 **Available everywhere** | Works flawlessly on Node.js 18+, Bun, Deno, modern browsers*, Cloudflare Workers, React Native, Capacitor, Electron, etc.
 - 🔒 **Secure** | Zero password stored; supports AES-GCM data encryption.
 
 ---
@@ -104,4 +104,6 @@ This means if you utilize Linkdirecte inside a project and make it publicly avai
 
 <p align="center">
   Made with ❤️ by typeof (Scolup)
+
+  *Chromium only works when the proxy is enabled.
 </p>
