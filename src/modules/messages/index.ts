@@ -11,6 +11,17 @@ import {
 export interface GetMessagesOptions {
   folderId?: number;
   withContent?: boolean;
+  year?: string;
+}
+
+export interface GetMessageOptions {
+  year?: string;
+}
+
+const YEAR_PATTERN = /^\d{4}-\d{4}$/;
+
+function resolveYear(year: string | undefined): string {
+  return typeof year === 'string' && YEAR_PATTERN.test(year) ? year : '';
 }
 
 export interface SendMessageData {
@@ -45,11 +56,11 @@ export async function getMessages(options: GetMessagesOptions = {}): Promise<Mes
   const account = requireCurrentAccount();
   const endpoint = `/eleves/${account.id}/messages.awp?verbe=get`;
 
-  const { folderId, withContent, ...rest } = options;
+  const { folderId, withContent, year, ...rest } = options;
   const result = await edFetch<MessagesResult>(endpoint, {
     method: 'POST',
     body: {
-      anneeMessages: '',
+      anneeMessages: resolveYear(year),
       ...(folderId !== undefined ? { idClasseur: folderId } : {}),
     },
     ...rest,
@@ -71,13 +82,16 @@ export async function getMessages(options: GetMessagesOptions = {}): Promise<Mes
   return result;
 }
 
-export async function getMessage(id: number): Promise<MessageEntry> {
+export async function getMessage(
+  id: number,
+  options: GetMessageOptions = {},
+): Promise<MessageEntry> {
   assertPositiveNumber(id, 'message id');
   const account = requireCurrentAccount();
   const endpoint = `/eleves/${account.id}/messages/${id}.awp?verbe=get&mode=destinataire`;
   return edFetch<MessageEntry>(endpoint, {
     method: 'POST',
-    body: { anneeMessages: '' },
+    body: { anneeMessages: resolveYear(options.year) },
   });
 }
 

@@ -47,6 +47,7 @@ function getMessages(options?: GetMessagesOptions): Promise<MessagesResult>
 - `options` *(optional)*:
   - `folderId` *(number)*: Pass a folder ID to retrieve messages from custom archives or folders.
   - `withContent` *(boolean)*: If set to `true`, automatically makes individual parallel queries to retrieve the content bodies for all returned messages. Defaults to `false`.
+  - `year` *(string)*: Restrict messages to a school year range in the `AAAA-AAAA` format (e.g. `2023-2024`). If the format is invalid or omitted, the default empty value is used.
 
 ---
 
@@ -57,8 +58,15 @@ Loads the detailed envelope and content body for a single message.
 ```typescript
 function getMessage(
   id: number,
+  options?: GetMessageOptions,
 ): Promise<MessageEntry>
 ```
+
+#### Parameters
+
+- `id` *(number)*: The unique ID of the message to retrieve.
+- `options` *(optional)*:
+  - `year` *(string)*: Restrict the message to a school year range in the `AAAA-AAAA` format (e.g. `2023-2024`). If the format is invalid or omitted, the default empty value is used.
 
 > **Note**: Opening a message with `getMessage` automatically marks it as **read** on EcoleDirecte's servers.
 

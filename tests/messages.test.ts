@@ -119,6 +119,100 @@ describe('Messages Module', () => {
     expect(requests[0].body.idClasseur).toBe(42);
   });
 
+  it('sends year in body when year is valid', async () => {
+    globalThis.fetch = async (input, init) => {
+      const urlStr = input.toString();
+      const method = init?.method || 'GET';
+      let parsedBody: any = undefined;
+      if (init?.body) {
+        const bodyStr = init.body.toString();
+        if (bodyStr.startsWith('data=')) {
+          parsedBody = JSON.parse(decodeURIComponent(bodyStr.substring(5)));
+        } else {
+          parsedBody = bodyStr;
+        }
+      }
+      requests.push({ url: urlStr, method, body: parsedBody });
+
+      return new Response(
+        JSON.stringify({
+          code: 200,
+          message: '',
+          data: { messages: { received: [] } },
+        }),
+        { status: 200, headers: { 'Content-Type': 'application/json' } },
+      );
+    };
+
+    await getMessages({ year: '1111-1111' });
+
+    expect(requests.length).toBe(1);
+    expect(requests[0].body.anneeMessages).toBe('1111-1111');
+  });
+
+  it('sends empty year when year is invalid or missing', async () => {
+    globalThis.fetch = async (input, init) => {
+      const urlStr = input.toString();
+      const method = init?.method || 'GET';
+      let parsedBody: any = undefined;
+      if (init?.body) {
+        const bodyStr = init.body.toString();
+        if (bodyStr.startsWith('data=')) {
+          parsedBody = JSON.parse(decodeURIComponent(bodyStr.substring(5)));
+        } else {
+          parsedBody = bodyStr;
+        }
+      }
+      requests.push({ url: urlStr, method, body: parsedBody });
+
+      return new Response(
+        JSON.stringify({
+          code: 200,
+          message: '',
+          data: { messages: { received: [] } },
+        }),
+        { status: 200, headers: { 'Content-Type': 'application/json' } },
+      );
+    };
+
+    await getMessages({ year: 'bad' });
+    expect(requests[0].body.anneeMessages).toBe('');
+
+    await getMessages();
+    expect(requests[1].body.anneeMessages).toBe('');
+  });
+
+  it('sends year in body for getMessage when year is valid', async () => {
+    globalThis.fetch = async (input, init) => {
+      const urlStr = input.toString();
+      const method = init?.method || 'GET';
+      let parsedBody: any = undefined;
+      if (init?.body) {
+        const bodyStr = init.body.toString();
+        if (bodyStr.startsWith('data=')) {
+          parsedBody = JSON.parse(decodeURIComponent(bodyStr.substring(5)));
+        } else {
+          parsedBody = bodyStr;
+        }
+      }
+      requests.push({ url: urlStr, method, body: parsedBody });
+
+      return new Response(JSON.stringify({ code: 200, message: '', data: {} }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    };
+
+    await getMessage(111, { year: '2222-3333' });
+    expect(requests[0].body.anneeMessages).toBe('2222-3333');
+
+    await getMessage(111, { year: 'nope' });
+    expect(requests[1].body.anneeMessages).toBe('');
+
+    await getMessage(111);
+    expect(requests[2].body.anneeMessages).toBe('');
+  });
+
   it('fetches message content when withContent is true', async () => {
     globalThis.fetch = async (input, init) => {
       const urlStr = input.toString();
